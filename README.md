@@ -15,7 +15,7 @@ BEFORE YOU START
 
 In order to utilize Airlock you must upgrade your classic Google Analytics property to Universal Analytics. From the Admin panel under your Property column you will see an option for "Universal Analytics Upgrade".
 
-if the upgrade feature is not available in the property settings it could mean that the upgrade has not been rolled out to you yet. You can request whitelist access to upgrade using the Google signup document. https://docs.google.com/a/searchdiscovery.com/forms/d/1APUQLB54t8VluqM-RkqkK3wK_a61IsvDxt-YEk6q-EU/viewform#start=invite
+If the upgrade feature is not available in the property settings it could mean that the upgrade has not been rolled out to you yet. You can request whitelist access to upgrade using the Google signup document. https://docs.google.com/a/searchdiscovery.com/forms/d/1APUQLB54t8VluqM-RkqkK3wK_a61IsvDxt-YEk6q-EU/viewform#start=invite
 
 Select the Transfer button to complete the upgrade request. It will take up to 48 hours to complete the upgrade to Universal Analytics. **Do not** install Airlock until 
 this upgrade is complete. After your upgrade is complete your classic Google
