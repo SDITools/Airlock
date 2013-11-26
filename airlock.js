@@ -236,7 +236,7 @@ by Search Discovery <http://searchdiscovery.com/>
       output: ['send', 'pageview', '[[pagePath]]']
     },
     _trackTiming: {
-      input: ['timingVar', 'timingValue', 'timingLabel'],
+      input: ['timingCategory', 'timingVar', 'timingValue', 'timingLabel'],
       output: ['send', 'timing', passthru]
     },
     _trackSocial: {
