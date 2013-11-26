@@ -8,8 +8,16 @@
    d8888888888   888   888  T88b  888     Y88b. .d88P Y88b  d88P 888   Y88b
   d88P     888 8888888 888   T88b 88888888 "Y88888P"   "Y8888P"  888    Y88b
 ------------------------------------------------------------------------------
+
 Airlock v0.1.0
-by Search Discovery <http://searchdiscovery.com/>
+(c) 2013 by Search Discovery <http://searchdiscovery.com/>
+
+
+airlock.js may be freely distributed under the MIT license.
+
+For all details and documentation: http://www.searchdiscovery.com/airlock
+
+
 ----------------------------------------------------------------------------*/
 (function (window, document, undefined) {
 
@@ -25,11 +33,11 @@ by Search Discovery <http://searchdiscovery.com/>
     c.async = 1;
     c.src = l;
     k.parentNode.insertBefore(c, k);
-  })(window, document, 'script', '//www.google-analytics.com/analytics_debug.js', 'ga');
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
   var _gaq = window._gaq,
       rx = {
-        actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link)$/,
+        actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
         setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath)?)$/,
         ecommerceActions: /^(.+\.)?_(add(Trans|Item)|trackTrans)$/,
         writeableSet: /^page|title$/
@@ -140,11 +148,13 @@ by Search Discovery <http://searchdiscovery.com/>
 
   // Once our arguments are "pressurized", send them off to `ga()`
   Airlock.open = function (spaceship, args) {
-    args[0] = !spaceship.namespace || args[0] === 'create' ?
-      args[0] :
-      [spaceship.namespace, args[0]].join('.');
+    if (args) {
+      args[0] = !spaceship.namespace || args[0] === 'create' ?
+        args[0] :
+        [spaceship.namespace, args[0]].join('.');
 
-    window.ga.apply(window, args);
+      window.ga.apply(window, args);
+    }
   };
 
   Airlock.pressurize = function (spaceship, args) {
@@ -218,6 +228,12 @@ by Search Discovery <http://searchdiscovery.com/>
         window.ga('require', 'linker');
         Airlock.open(that, ['linker:autoLink', that._settings.domainName]);
       });
+    },
+    // Enhanced Link Attribution
+    _require: function (type){
+      if (type === 'inpage_linkid') {
+        return ['require','linkid','linkid.js'];
+      }
     },
 
     // Custom Variables
