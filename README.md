@@ -25,19 +25,22 @@ Once your property has been successfully transferred to Universal Analytics, it 
 ## Implementing Airlock With On-Page Code
 To upgrade a vanilla Google Analytics install where you are not using any tag management systems, you will replace the code to include the Google Analytics file with the Airlock code.
 
-	<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-XXXXX-X']);
-	_gaq.push(['_trackPageview']);
+```html
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-XXXXX-X']);
+  _gaq.push(['_trackPageview']);
 
-	(function() {
-	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
-	</script>
+  (function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+```
 
 Remove the function that includes the classic Google Analytics ga.js file and include the Airlock JavaScript file. We recommend that the Airlock code be placed in a separate file, which will be hosted on your servers.
+
 ```html
 <script type="text/javascript">
   var _gaq = _gaq || [];
