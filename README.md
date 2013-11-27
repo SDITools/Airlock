@@ -1,4 +1,4 @@
-# Airlock v0.1.0
+# Airlock
 
 (c) 2013 by Search Discovery <http://searchdiscovery.com/>
 
