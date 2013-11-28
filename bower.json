@@ -1,0 +1,27 @@
+{
+  "name": "Airlock",
+  "main": "airlock.min.js",
+  "version": "0.1.0",
+  "homepage": "http://www.searchdiscovery.com/airlock",
+  "authors": [
+    "Search Discovery"
+  ],
+  "description": "JavaScript library for translating classic Google Analytics tags to Universal Analytics",
+  "keywords": [
+    "ga",
+    "google-analytics",
+    "_gaq",
+    "ua",
+    "analytics",
+    "tracking"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "Gruntfile.js"
+  ]
+}
