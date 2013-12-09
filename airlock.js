@@ -8,16 +8,12 @@
    d8888888888   888   888  T88b  888     Y88b. .d88P Y88b  d88P 888   Y88b
   d88P     888 8888888 888   T88b 88888888 "Y88888P"   "Y8888P"  888    Y88b
 ------------------------------------------------------------------------------
-
-Airlock v0.1.0
+Airlock v0.1.1
 (c) 2013 by Search Discovery <http://searchdiscovery.com/>
-
 
 airlock.js may be freely distributed under the MIT license.
 
 For all details and documentation: http://www.searchdiscovery.com/airlock
-
-
 ----------------------------------------------------------------------------*/
 (function (window, document, undefined) {
 
@@ -90,6 +86,12 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // loop through _gaq to strip out setup calls
     for (i = 0, ln = _gaq.length; i < ln; i++) {
       spaceship = null;
+
+      if (typeof _gaq[i] === 'function') {
+        Airlock.pressurize(_gaq[i]);
+        continue;
+      }
+
       action = Airlock.readAction(_gaq[i][0]);
 
       if (/_setAccount/.test(action.action)) {
@@ -101,7 +103,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         continue;
       }
       if (rx.setupActions.test(action.action)) {
-        this.pressurize(this.spaceships.get(action.namespace), _gaq[i]);
+        this.pressurize(_gaq[i], this.spaceships.get(action.namespace));
         continue;
       }
       newQ.push(_gaq[i]);
@@ -120,6 +122,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // `push()` on the global `_gaq` variable will intercept any calls
     // to `_gaq.prototype.push()`
     window._gaq.push = function (args) {
+      if (typeof args === 'function') {
+        return Airlock.pressurize(args);
+      }
+
       var action = args[0];
       // Ensure users are sending a valid action, otherwise do nothing.
       if (!rx.actions.test(action)) { return; }
@@ -132,7 +138,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
 
       if (!spaceship) { return; }
-      args = Airlock.pressurize(spaceship, args);
+      args = Airlock.pressurize(args, spaceship);
       Airlock.open(spaceship, args);
     };
 
@@ -157,7 +163,17 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     }
   };
 
-  Airlock.pressurize = function (spaceship, args) {
+  Airlock.pressurize = function (args, spaceship) {
+    if (typeof args === 'function') {
+      try {
+        return args();
+      } catch (e) {
+        if (console && console.warn) {
+          console.warn('AIRLOCK: function passed to _gaq threw error', _gaq[i].toString(), e);
+        }
+      }
+    }
+
     var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
     if (!conversion) { return; }
 
