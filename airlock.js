@@ -52,6 +52,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     this._contents[key] = val;
     return this;
   };
+  Store.prototype.has = function (key) {
+    key = key || this._defaultKey;
+    return !!this._contents[key];
+  };
   Store.prototype.each = function (func, context) {
     for (var key in this._contents) {
       func.call(context, this._contents[key], key, this._contents);
@@ -59,13 +63,24 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   // Each spaceship represents a tracker namespace.
-  var SpaceShip = function (options) {
+  var SpaceShip = function (namespace) {
     this.settings = {};
     this._settings = {};
-    this.account = options.account;
-    this.namespace = options.namespace;
+    this.namespace = namespace;
     this.setupQueue = [];
+    this.initialized = false;
     this.settings.name = this.namespace;
+  };
+
+  SpaceShip.prototype.setAccount = function (uaCode) {
+    this.account = uaCode;
+  };
+
+  SpaceShip.prototype.initialize = function () {
+    for (i = 0, ln = this.setupQueue.length; i < ln; i++) {
+      this.setupQueue[i]();
+    }
+    this.initialized = true;
   };
 
   var Airlock = {};
@@ -94,15 +109,12 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
       action = Airlock.readAction(_gaq[i][0]);
 
-      if (/_setAccount/.test(action.action)) {
-        spaceship = new SpaceShip({
-          namespace: action.namespace,
-          account: _gaq[i][1]
-        });
-        this.dock(spaceship);
-        continue;
-      }
       if (rx.setupActions.test(action.action)) {
+        // If we find a tracker we have not yet initialized, set it up
+        if (!this.spaceships.has(action.namespace)) {
+          spaceship = new SpaceShip(action.namespace);
+          this.dock(spaceship);
+        }
         this.pressurize(_gaq[i], this.spaceships.get(action.namespace));
         continue;
       }
@@ -138,6 +150,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
 
       if (!spaceship) { return; }
+
       args = Airlock.pressurize(args, spaceship);
       Airlock.open(spaceship, args);
     };
@@ -154,12 +167,15 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // Once our arguments are "pressurized", send them off to `ga()`
   Airlock.open = function (spaceship, args) {
+    if (!spaceship.account) { return; }
+    var create = args[0] === 'create';
     if (args) {
-      args[0] = !spaceship.namespace || args[0] === 'create' ?
+      args[0] = !spaceship.namespace || create ?
         args[0] :
         [spaceship.namespace, args[0]].join('.');
 
       window.ga.apply(window, args);
+      if (create) { spaceship.initialize(); }
     }
   };
 
@@ -221,6 +237,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   Airlock.conversions = {
     // Setup actions
+    _setAccount: function (uaCode) {
+      this.setAccount(uaCode);
+    },
     _setSampleRate: function (rate) {
       this.settings.sampleRate = rate;
     },
@@ -253,9 +272,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     },
 
     // Custom Variables
-    _setCustomVar: {
-      input: ['slot', 'name', 'value'],
-      output: ['set', 'dimension[[slot]]', '[[value]]']
+    _setCustomVar: function (slot, name, value) {
+      var args = ['set', 'dimension' + slot, value];
+      if (this.initialized) { return args; }
+      this.setupQueue.push(Airlock.open.bind(Airlock, this, args));
     },
 
     // Tracking actions
