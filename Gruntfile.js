@@ -76,8 +76,7 @@ module.exports = function (grunt) {
   grunt.registerTask('testOnce', ['server', 'casperjs']);
   grunt.registerTask('deploy', [
     'replace:deploy',
-    'uglify:deploy',
-    'gitpush:deploy'
+    'uglify:deploy'
   ]);
 
   grunt.registerTask('server', 'Server HTML test runner', function () {
