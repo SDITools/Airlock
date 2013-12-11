@@ -1,6 +1,7 @@
 module.exports = function (grunt) {
 
-  var pkg = grunt.file.readJSON('package.json');
+  var pkg = grunt.file.readJSON('package.json'),
+      tagged;
 
   grunt.initConfig({
     pkg: pkg,
@@ -20,6 +21,14 @@ module.exports = function (grunt) {
       },
       files: ['tests/actions/']
     },
+    gittag: {
+      newVersion: {
+        options: {
+          tag: 'v' + grunt.option('vn'),
+          message: 'Updating Version'
+        }
+      }
+    },
     replace: {
       deploy: {
         options: {
@@ -28,6 +37,10 @@ module.exports = function (grunt) {
             replacement: function (match, version, index, file) {
               var newVers = grunt.option('vn');
               if (!newVers) { return match; }
+              if (newVers !== match && !tagged) {
+                grunt.task.run('gittag:newVersion');
+                tagged = true;
+              }
               return match.replace(version, newVers);
             }
           }]
@@ -55,12 +68,17 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-casperjs');
   grunt.loadNpmTasks('grunt-replace');
+  grunt.loadNpmTasks('grunt-git');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('test', ['server', 'casperjs', 'watch:test']);
   grunt.registerTask('testOnce', ['server', 'casperjs']);
-  grunt.registerTask('deploy', ['replace:deploy', 'uglify:deploy']);
+  grunt.registerTask('deploy', [
+    'replace:deploy',
+    'uglify:deploy',
+    'gitpush:deploy'
+  ]);
 
   grunt.registerTask('server', 'Server HTML test runner', function () {
     var fs = require('fs');
