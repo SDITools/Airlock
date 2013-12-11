@@ -20,6 +20,26 @@ module.exports = function (grunt) {
       },
       files: ['tests/actions/']
     },
+    replace: {
+      deploy: {
+        options: {
+          patterns: [{
+            match: /(?:"version"\:|Airlock) (?:"|v)(\d+\.\d+\.\d+)"?/,
+            replacement: function (match, version, index, file) {
+              var newVers = grunt.option('vn');
+              if (!newVers) { return match; }
+              return match.replace(version, newVers);
+            }
+          }]
+        },
+        files: [
+          {
+            src : ['package.json', 'bower.json', 'airlock.js'],
+            dest : "./"
+          }
+        ]
+      }
+    },
     uglify: {
       deploy: {
         options: {
@@ -34,12 +54,13 @@ module.exports = function (grunt) {
   });
 
   grunt.loadNpmTasks('grunt-casperjs');
+  grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('test', ['server', 'casperjs', 'watch:test']);
   grunt.registerTask('testOnce', ['server', 'casperjs']);
-  grunt.registerTask('deploy', ['uglify:deploy']);
+  grunt.registerTask('deploy', ['replace:deploy', 'uglify:deploy']);
 
   grunt.registerTask('server', 'Server HTML test runner', function () {
     var fs = require('fs');
