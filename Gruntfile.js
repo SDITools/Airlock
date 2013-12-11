@@ -75,6 +75,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['server', 'casperjs', 'watch:test']);
   grunt.registerTask('testOnce', ['server', 'casperjs']);
   grunt.registerTask('deploy', [
+    'testOnce',
     'replace:deploy',
     'uglify:deploy'
   ]);
