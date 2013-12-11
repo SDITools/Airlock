@@ -31,7 +31,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     k.parentNode.insertBefore(c, k);
   })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-  // We're pretty loop here, so this makes our lives easier.
+  // We're pretty loopy here, so this makes our lives easier.
   if (!Array.prototype.forEach) {
     Array.prototype.forEach = function (fn, scope) {
       for (var i = 0, len = this.length; i < len; ++i) {
@@ -41,6 +41,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       }
     };
   }
+
+  var returnArg = function (arg) { return arg; },
+      runArg = function (arg, scope) { arg.call(scope); };
 
   var _gaq = window._gaq,
       rx = {
@@ -52,7 +55,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   var Store = function () {
     this._contents = {};
-    this._defaultKey = '__default__';
+    this._defaultKey = 't0';
   };
   Store.prototype.get = function (key) {
     key = key || this._defaultKey;
@@ -67,17 +70,18 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     key = key || this._defaultKey;
     return !!this._contents[key];
   };
-  Store.prototype.each = function (func, context) {
+  Store.prototype.forEach = function (func, context) {
     for (var key in this._contents) {
       func.call(context, this._contents[key], key, this._contents);
     }
   };
 
   // Each spaceship represents a tracker namespace.
-  var SpaceShip = function (namespace) {
+  var SpaceShip = function (namespace, account) {
     this.settings = {};
     this._settings = {};
     this.namespace = namespace;
+    this.account = account;
     this.setupQueue = [];
     this.initialized = false;
     this.settings.name = this.namespace;
@@ -85,13 +89,13 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   SpaceShip.prototype.setAccount = function (uaCode) {
     this.account = uaCode;
+    return this;
   };
 
   SpaceShip.prototype.initialize = function () {
-    this.setupQueue.forEach(function (qItem) {
-      qItem();
-    });
+    this.setupQueue.forEach(runArg);
     this.initialized = true;
+    return this;
   };
 
   var Airlock = {};
@@ -107,7 +111,20 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.initialize = function () {
-    var newQ = [];
+    var newQ = [], ga = window.ga;
+
+    // loop through ga to see if users have implemented a custom "create"
+    if (ga.P) {
+      ga.P.forEach(function (tracker) {
+        var namespace = tracker.get('name'),
+            account = tracker.get('trackingId'),
+            spaceship;
+
+        spaceship = new Spaceship(namespace, account);
+        spaceship.initialize();
+        this.dock(spaceship);
+      }, this);
+    }
 
     // loop through _gaq to strip out setup calls
     _gaq.forEach(function (qItem) {
@@ -129,9 +146,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       newQ.push(qItem);
     }, this);
 
-    Array.prototype.splice.apply(window._gaq, [0, _gaq.length].concat(newQ));
+    Array.prototype.splice.apply(_gaq, [0, _gaq.length].concat(newQ));
 
-    this.spaceships.each(function (spaceship) {
+    this.spaceships.forEach(function (spaceship) {
       Airlock.open(spaceship, [
         'create',
         spaceship.account,
@@ -142,7 +159,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // No need to do anything fancy here. Setting an instance method
     // `push()` on the global `_gaq` variable will intercept any calls
     // to `_gaq.prototype.push()`
-    window._gaq.push = function (args) {
+    _gaq.push = function (args) {
       if (typeof args === 'function') {
         return Airlock.pressurize(args);
       }
@@ -154,7 +171,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       // If the user is trying to setup/send an ecommerce action
       if (rx.ecommerceActions.test(action) && !Airlock.ecommerceInitialized) {
         Airlock.ecommerceInitialized = true;
-        window.ga('require', 'ecommerce', 'ecommerce.js');
+        ga('require', 'ecommerce', 'ecommerce.js');
       }
       var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
 
@@ -240,8 +257,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     return template;
   };
 
-  var passthru = function (arg) { return arg; };
-
   Airlock.conversions = {
     // Setup actions
     _setAccount: function (uaCode) {
@@ -288,7 +303,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // Tracking actions
     _trackEvent: {
       input: ['eventCategory', 'eventAction', 'eventLabel', 'eventValue', 'nonInteraction'],
-      output: ['send', 'event', passthru]
+      output: ['send', 'event', returnArg]
     },
     _trackPageview: {
       input: ['pagePath'],
@@ -296,21 +311,21 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     },
     _trackTiming: {
       input: ['timingCategory', 'timingVar', 'timingValue', 'timingLabel'],
-      output: ['send', 'timing', passthru]
+      output: ['send', 'timing', returnArg]
     },
     _trackSocial: {
       input: ['socialNetwork', 'socialAction', 'socialTarget', 'page'],
-      output: ['send', 'social', passthru]
+      output: ['send', 'social', returnArg]
     },
 
     // Ecommerce
     _addTrans: {
       input: ['id', 'affiliation', 'revenue', 'tax', 'shipping'],
-      output: ['ecommerce:addTransaction', passthru]
+      output: ['ecommerce:addTransaction', returnArg]
     },
     _addItem: {
       input: ['id', 'sku', 'name', 'category', 'price', 'quantity'],
-      output: ['ecommerce:addItem', passthru]
+      output: ['ecommerce:addItem', returnArg]
     },
     _trackTrans: {
       input: [],
