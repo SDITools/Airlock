@@ -31,6 +31,17 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     k.parentNode.insertBefore(c, k);
   })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
+  // We're pretty loop here, so this makes our lives easier.
+  if (!Array.prototype.forEach) {
+    Array.prototype.forEach = function (fn, scope) {
+      for (var i = 0, len = this.length; i < len; ++i) {
+        if (i in this) {
+          fn.call(scope, this[i], i, this);
+        }
+      }
+    };
+  }
+
   var _gaq = window._gaq,
       rx = {
         actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
@@ -77,9 +88,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   SpaceShip.prototype.initialize = function () {
-    for (i = 0, ln = this.setupQueue.length; i < ln; i++) {
-      this.setupQueue[i]();
-    }
+    this.setupQueue.forEach(function (qItem) {
+      qItem();
+    });
     this.initialized = true;
   };
 
@@ -96,30 +107,28 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.initialize = function () {
-    var newQ = [], action, spaceship;
+    var newQ = [];
 
     // loop through _gaq to strip out setup calls
-    for (i = 0, ln = _gaq.length; i < ln; i++) {
-      spaceship = null;
-
-      if (typeof _gaq[i] === 'function') {
-        Airlock.pressurize(_gaq[i]);
-        continue;
+    _gaq.forEach(function (qItem) {
+      if (typeof qItem === 'function') {
+        Airlock.pressurize(qItem);
+        return;
       }
 
-      action = Airlock.readAction(_gaq[i][0]);
+      var action = Airlock.readAction(qItem[0]);
 
       if (rx.setupActions.test(action.action)) {
         // If we find a tracker we have not yet initialized, set it up
         if (!this.spaceships.has(action.namespace)) {
-          spaceship = new SpaceShip(action.namespace);
-          this.dock(spaceship);
+          this.dock(new SpaceShip(action.namespace));
         }
-        this.pressurize(_gaq[i], this.spaceships.get(action.namespace));
-        continue;
+        this.pressurize(qItem, this.spaceships.get(action.namespace));
+        return;
       }
-      newQ.push(_gaq[i]);
-    }
+      newQ.push(qItem);
+    }, this);
+
     Array.prototype.splice.apply(window._gaq, [0, _gaq.length].concat(newQ));
 
     this.spaceships.each(function (spaceship) {
@@ -155,9 +164,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       Airlock.open(spaceship, args);
     };
 
-    for (i = 0, ln = _gaq.length; i < ln; i++) {
-      _gaq.push(_gaq[i]);
-    }
+    _gaq.forEach(_gaq.push.bind(_gaq));
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -209,12 +216,12 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
     // loop through outputs and permute values as necessary
     i = 0; ln = conversion.output.length;
-    for (; i < ln; i++) {
-      var val = permute(conversion.output[i], index);
+    conversion.output.forEach(function (output) {
+      var val = permute(output, index);
       if (val) {
         out.push(val);
       }
-    }
+    });
     return out;
   };
 
