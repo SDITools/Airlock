@@ -127,20 +127,23 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // custom "create". If so, add a function to the queue to fire directly
     // after the queue item has been processed.
     if (ga.q) {
-      ga.q.forEach(function (qItem, i) {
-        if (typeof qItem[0] !== 'string') { return; }
-        if (qItem[0] === 'create') {
-          ga(function () {
-            var ga = window[window.GoogleAnalyticsObject],
-                settings = qItem[qItem.length - 1],
-                namespace = typeof settings === 'object' && settings.name ? settings.name : 't0',
-                tracker = ga.getByName(namespace),
-                spaceship = SpaceShip.fromTracker(tracker);
+      var tempQ = [].concat(ga.q),
+          j = 0;
 
-            Airlock.dock(spaceship);
-          });
-        }
+      ga.q.forEach(function (qItem, i) {
+        if (typeof qItem[0] !== 'string' || qItem[0] !== 'create') { return; }
+        j = j+i+1;
+        tempQ.splice(j, 0, [function () {
+          var ga = window[window.GoogleAnalyticsObject],
+              settings = qItem[qItem.length - 1],
+              namespace = typeof settings === 'object' && settings.name ? settings.name : 't0',
+              tracker = ga.getByName(namespace),
+              spaceship = SpaceShip.fromTracker(tracker);
+
+          Airlock.dock(spaceship);
+        }]);
       });
+      ga.q = tempQ;
     }
 
     // loop through initialized ga to see if users have implemented a
