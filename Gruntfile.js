@@ -56,12 +56,20 @@ module.exports = function (grunt) {
     uglify: {
       deploy: {
         options: {
+          report: 'gzip',
           banner: '/* | <%= pkg.name %> - v<%= pkg.version %>' + '\n' +
                   '   | <%= pkg.homepage %> */' + '\n'
         },
         files: {
           'airlock.min.js': ['airlock.js']
         }
+      }
+    },
+    jshint: {
+      deploy: {
+        files: [{
+          src: ['airlock.js']
+        }]
       }
     }
   });
@@ -70,12 +78,14 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-replace');
   grunt.loadNpmTasks('grunt-git');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
   grunt.registerTask('test', ['server', 'casperjs', 'watch:test']);
   grunt.registerTask('testOnce', ['server', 'casperjs']);
   grunt.registerTask('deploy', [
     'testOnce',
+    'jshint:deploy',
     'replace:deploy',
     'uglify:deploy'
   ]);

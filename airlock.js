@@ -74,7 +74,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
   Store.prototype.forEach = function (func, context) {
     for (var key in this._contents) {
-      func.call(context, this._contents[key], key, this._contents);
+      if (this._contents.hasOwnProperty(key)) {
+        func.call(context, this._contents[key], key, this._contents);
+      }
     }
   };
 
