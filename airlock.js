@@ -19,6 +19,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // First thing's first; load the new hotness.
   (function(a, i, r, l, o, c, k) {
+    if (a.GoogleAnalyticsObject && a[a.GoogleAnalyticsObject]) { return; }
     a.GoogleAnalyticsObject = o;
     a[o] = a[o] || (function() {
       (a[o].q = a[o].q || []).push(arguments);
@@ -42,10 +43,11 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     };
   }
 
-  var returnArg = function (arg) { return arg; },
-      runArg = function (arg, scope) { arg.call(scope); };
+  // Convenience functions
+  var returnArg = function (arg) { return arg; };
 
   var _gaq = window._gaq,
+      ga = window[window.GoogleAnalyticsObject],
       rx = {
         actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
         setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath)?)$/,
@@ -87,13 +89,21 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     this.settings.name = this.namespace;
   };
 
+  SpaceShip.fromTracker = function (tracker) {
+    var namespace = tracker.get('name'),
+        account = tracker.get('trackingId'),
+        spaceship = new SpaceShip(namespace, account);
+
+    return spaceship.initialize();
+  };
+
   SpaceShip.prototype.setAccount = function (uaCode) {
     this.account = uaCode;
     return this;
   };
 
   SpaceShip.prototype.initialize = function () {
-    this.setupQueue.forEach(runArg);
+    this.setupQueue.forEach(function (qItem) { qItem(); });
     this.initialized = true;
     return this;
   };
@@ -111,17 +121,33 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.initialize = function () {
-    var newQ = [], ga = window.ga;
+    var newQ = [], ga = window[window.GoogleAnalyticsObject];
 
-    // loop through ga to see if users have implemented a custom "create"
+    // loop through uninitialized ga to see if users have implemented a
+    // custom "create". If so, add a function to the queue to fire directly
+    // after the queue item has been processed.
+    if (ga.q) {
+      ga.q.forEach(function (qItem, i) {
+        if (typeof qItem[0] !== 'string') { return; }
+        if (qItem[0] === 'create') {
+          ga(function () {
+            var ga = window[window.GoogleAnalyticsObject],
+                settings = qItem[qItem.length - 1],
+                namespace = typeof settings === 'object' && settings.name ? settings.name : 't0',
+                tracker = ga.getByName(namespace),
+                spaceship = SpaceShip.fromTracker(tracker);
+
+            Airlock.dock(spaceship);
+          });
+        }
+      });
+    }
+
+    // loop through initialized ga to see if users have implemented a
+    // custom "create"
     if (ga.P) {
       ga.P.forEach(function (tracker) {
-        var namespace = tracker.get('name'),
-            account = tracker.get('trackingId'),
-            spaceship;
-
-        spaceship = new Spaceship(namespace, account);
-        spaceship.initialize();
+        var spaceship = SpaceShip.fromTracker(tracker);
         this.dock(spaceship);
       }, this);
     }
@@ -181,7 +207,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       Airlock.open(spaceship, args);
     };
 
-    _gaq.forEach(_gaq.push.bind(_gaq));
+    _gaq.forEach([].push.bind(_gaq));
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -198,7 +224,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         args[0] :
         [spaceship.namespace, args[0]].join('.');
 
-      window.ga.apply(window, args);
+      window[window.GoogleAnalyticsObject].apply(window, args);
       if (create) { spaceship.initialize(); }
     }
   };
@@ -272,7 +298,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       this.settings[key.replace('ua', 'cookie')] = val;
 
       if (rx.writeableSet.test(key)) {
-        return ['set',key,val];
+        return ['set', key, val];
       }
     },
     _setDomainName: function (domainName) {
@@ -282,7 +308,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       var that = this;
       this.settings.allowLinker = allow;
       this.setupQueue.push(function () {
-        window.ga('require', 'linker');
+        ga('require', 'linker');
         Airlock.open(that, ['linker:autoLink', that._settings.domainName]);
       });
     },
