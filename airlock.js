@@ -80,6 +80,12 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // Each spaceship represents a tracker namespace.
   var SpaceShip = function (namespace, account) {
+    if (typeof namespace === 'object') {
+      tracker = namespace;
+      namespace = tracker.get('name');
+      account = tracker.get('trackingId');
+      return new SpaceShip(namespace, account).initialize();
+    }
     this.settings = {};
     this._settings = {};
     this.namespace = namespace;
@@ -87,14 +93,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     this.setupQueue = [];
     this.initialized = false;
     this.settings.name = this.namespace;
-  };
-
-  SpaceShip.fromTracker = function (tracker) {
-    var namespace = tracker.get('name'),
-        account = tracker.get('trackingId'),
-        spaceship = new SpaceShip(namespace, account);
-
-    return spaceship.initialize();
   };
 
   SpaceShip.prototype.setAccount = function (uaCode) {
@@ -138,7 +136,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
               settings = qItem[qItem.length - 1],
               namespace = typeof settings === 'object' && settings.name ? settings.name : 't0',
               tracker = ga.getByName(namespace),
-              spaceship = SpaceShip.fromTracker(tracker);
+              spaceship = new SpaceShip(tracker);
 
           Airlock.dock(spaceship);
         }]);
@@ -150,7 +148,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // custom "create"
     if (ga.P) {
       ga.P.forEach(function (tracker) {
-        var spaceship = SpaceShip.fromTracker(tracker);
+        var spaceship = new SpaceShip(tracker);
         this.dock(spaceship);
       }, this);
     }
