@@ -160,8 +160,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       }, this);
     }
 
-    console.log(JSON.stringify(_gaq));
-
     // loop through _gaq to strip out setup calls
     _gaq.forEach(function (qItem) {
       if (typeof qItem === 'function') {
@@ -214,14 +212,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       if (!spaceship) { return; }
 
       args = Airlock.pressurize(args, spaceship);
+
       Airlock.open(spaceship, args);
     };
-
-    console.log(JSON.stringify(_gaq));
-
-    _gaq.forEach(Array.prototype.push.bind(_gaq));
-
-    console.log(JSON.stringify(_gaq));
+    _gaq.forEach(_gaq.push.bind(_gaq));
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -244,6 +238,8 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.pressurize = function (args, spaceship) {
+    console.log('args', args);
+    console.log('_gaq', JSON.stringify(_gaq));
     if (typeof args === 'function') {
       try {
         return args();
@@ -253,9 +249,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         }
       }
     }
-
-    var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
+    var conversion = Airlock.conversions[args.slice(0,1)[0].replace(rx.actions, "$2")];
+    console.log('console.log')
     if (!conversion) { return; }
+    console.log('after conversion', JSON.stringify(_gaq));
 
     if (typeof conversion === 'function') {
       return conversion.apply(spaceship, args);
