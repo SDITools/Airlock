@@ -210,7 +210,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       Airlock.open(spaceship, args);
     };
 
-    _gaq.forEach([].push.bind(_gaq));
+    _gaq.forEach(_gaq.push.bind(_gaq));
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -243,7 +243,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       }
     }
 
-    var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
+    var conversion = Airlock.conversions[args.slice(0,1)[0].replace(rx.actions, "$2")];
     if (!conversion) { return; }
 
     if (typeof conversion === 'function') {
