@@ -212,9 +212,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       if (!spaceship) { return; }
 
       args = Airlock.pressurize(args, spaceship);
-
       Airlock.open(spaceship, args);
     };
+
     _gaq.forEach(_gaq.push.bind(_gaq));
   };
 
@@ -238,8 +238,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.pressurize = function (args, spaceship) {
-    console.log('args', args);
-    console.log('_gaq', JSON.stringify(_gaq));
+    // break args reference
+    args = [].concat(args);
+
     if (typeof args === 'function') {
       try {
         return args();
@@ -249,10 +250,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         }
       }
     }
-    var conversion = Airlock.conversions[args.slice(0,1)[0].replace(rx.actions, "$2")];
-    console.log('console.log')
+
+    var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
     if (!conversion) { return; }
-    console.log('after conversion', JSON.stringify(_gaq));
 
     if (typeof conversion === 'function') {
       return conversion.apply(spaceship, args);
@@ -333,6 +333,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // Custom Variables
     _setCustomVar: function (slot, name, value) {
       var args = ['set', 'dimension' + slot, value];
+
       if (this.initialized) { return args; }
       this.setupQueue.push(Airlock.open.bind(Airlock, this, args));
     },
