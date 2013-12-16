@@ -1,8 +1,3 @@
-// need to initialize the _gaq array and GA tracking since DTM has it disabled
-var _gaq = _gaq || [];
-_gaq.push(['mymotechcom._setAccount','UA-66310-2']);
-_gaq.push(['mymotechcom._trackPageview']);
-
 /* ---------------------------------------------------------------------------
          d8888 8888888 8888888b.  888      .d88888b.   .d8888b.  888    d8P
         d88888   888   888   Y88b 888     d88P" "Y88b d88P  Y88b 888   d8P
