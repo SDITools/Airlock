@@ -147,7 +147,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       // If the user is trying to setup/send an ecommerce action
       if (rx.ecommerceActions.test(action) && !Airlock.ecommerceInitialized) {
         Airlock.ecommerceInitialized = true;
-        window.ga('require', 'ecommerce', 'ecommerce.js');
+        Airlock._open('require', 'ecommerce', 'ecommerce.js');
       }
       var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
 
@@ -169,24 +169,20 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // Once our arguments are "pressurized", execute them.
   Airlock.open = function (spaceship, args) {
-    if (typeof args === 'function') {
-      try {
-        return args();
-      } catch (e) {
-        if (console && console.warn) {
-          console.warn('AIRLOCK: function passed to _gaq threw error', _gaq[i].toString(), e);
-        }
-      }
-    }
-    if (!args || !spaceship || !spaceship.account) { return; }
+    if (!spaceship.account) { return; }
     var create = args[0] === 'create';
+    if (args) {
+      args[0] = !spaceship.namespace || create ?
+        args[0] :
+        [spaceship.namespace, args[0]].join('.');
 
-    args[0] = !spaceship.namespace || create ?
-      args[0] :
-      [spaceship.namespace, args[0]].join('.');
+      Airlock._open(args);
+      if (create) { spaceship.initialize(); }
+    }
+  };
 
-    window.ga.apply(window, args);
-    if (create) { spaceship.initialize(); }
+  Airlock._open = function (args) {
+    return window[window.GoogleAnalyticsObject].apply(window, args);
   };
 
   Airlock.pressurize = function (args, spaceship) {
@@ -260,7 +256,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       var that = this;
       this.settings.allowLinker = allow;
       this.setupQueue.push(function () {
-        window.ga('require', 'linker');
+        Airlock._open('require', 'linker');
         Airlock.open(that, ['linker:autoLink', that._settings.domainName]);
       });
     },
