@@ -169,7 +169,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // Once our arguments are "pressurized", execute them.
   Airlock.open = function (spaceship, args) {
-    if (!spaceship.account) { return; }
+    if (typeof args === 'function') {
+      return Airlock._open([args]);
+    }
+    if (!spaceship || !spaceship.account) { return; }
     var create = args[0] === 'create';
     if (args) {
       args[0] = !spaceship.namespace || create ?
