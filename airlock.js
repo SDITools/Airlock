@@ -105,7 +105,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       spaceship = null;
 
       if (typeof _gaq[i] === 'function') {
-        Airlock.pressurize(_gaq[i]);
+        Airlock.open(null, _gaq[i]);
         continue;
       }
 
@@ -137,7 +137,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     // to `_gaq.prototype.push()`
     window._gaq.push = function (args) {
       if (typeof args === 'function') {
-        return Airlock.pressurize(args);
+        return Airlock.open(null, args);
       }
 
       var action = args[0];
@@ -167,21 +167,8 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     this.spaceships.set(spaceship.namespace, spaceship);
   };
 
-  // Once our arguments are "pressurized", send them off to `ga()`
+  // Once our arguments are "pressurized", execute them.
   Airlock.open = function (spaceship, args) {
-    if (!spaceship.account) { return; }
-    var create = args[0] === 'create';
-    if (args) {
-      args[0] = !spaceship.namespace || create ?
-        args[0] :
-        [spaceship.namespace, args[0]].join('.');
-
-      window.ga.apply(window, args);
-      if (create) { spaceship.initialize(); }
-    }
-  };
-
-  Airlock.pressurize = function (args, spaceship) {
     if (typeof args === 'function') {
       try {
         return args();
@@ -191,7 +178,18 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         }
       }
     }
+    if (!args || !spaceship || !spaceship.account) { return; }
+    var create = args[0] === 'create';
 
+    args[0] = !spaceship.namespace || create ?
+      args[0] :
+      [spaceship.namespace, args[0]].join('.');
+
+    window.ga.apply(window, args);
+    if (create) { spaceship.initialize(); }
+  };
+
+  Airlock.pressurize = function (args, spaceship) {
     var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
     if (!conversion) { return; }
 
