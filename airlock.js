@@ -365,5 +365,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   if (Airlock.settings.autoInit !== false) {
     Airlock.initialize();
   }
+  if (typeof define === "function" && define.amd) {
+    define("airlock", [], function() {
+        return Airlock;
+    });
+  }
   window.Airlock = Airlock;
 })(window, document);
