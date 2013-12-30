@@ -1,7 +1,7 @@
 {
   "name": "Airlock",
   "main": "airlock.min.js",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "http://www.searchdiscovery.com/airlock",
   "authors": [
     "Search Discovery"
