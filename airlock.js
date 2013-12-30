@@ -87,6 +87,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   var Airlock = {};
 
+  Airlock.settings = window._airlock || {};
   Airlock.spaceships = new Store();
 
   Airlock.readAction = function (actionName) {
@@ -147,7 +148,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       // If the user is trying to setup/send an ecommerce action
       if (rx.ecommerceActions.test(action) && !Airlock.ecommerceInitialized) {
         Airlock.ecommerceInitialized = true;
-        Airlock._open('require', 'ecommerce', 'ecommerce.js');
+        Airlock._open(['require', 'ecommerce', 'ecommerce.js']);
       }
       var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
 
@@ -259,7 +260,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       var that = this;
       this.settings.allowLinker = allow;
       this.setupQueue.push(function () {
-        Airlock._open('require', 'linker');
+        Airlock._open(['require', 'linker']);
         Airlock.open(that, ['linker:autoLink', that._settings.domainName]);
       });
     },
@@ -310,6 +311,8 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     }
   };
 
-  Airlock.initialize();
+  if (Airlock.settings.autoInit !== false) {
+    Airlock.initialize();
+  }
   window.Airlock = Airlock;
 })(window, document);
