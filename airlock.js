@@ -50,13 +50,12 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   var returnArg = function (arg) { return arg; };
 
   var _gaq = window._gaq,
-      ga = window[window.GoogleAnalyticsObject],
       rx = {
         actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
         setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath)?)$/,
         ecommerceActions: /^(.+\.)?_(add(Trans|Item)|trackTrans)$/,
         writeableSet: /^page|title$/
-      }, i, ln;
+      };
 
   var Store = function () {
     this._contents = {};
@@ -86,7 +85,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   // Each spaceship represents a tracker namespace.
   var SpaceShip = function (namespace, account) {
     if (typeof namespace === 'object') {
-      tracker = namespace;
+      var tracker = namespace;
       namespace = tracker.get('name');
       account = tracker.get('trackingId');
       return new SpaceShip(namespace, account).initialize();
@@ -210,7 +209,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       args = Airlock.pressurize(args, spaceship);
       Airlock.open(spaceship, args);
     };
-
     _gaq.forEach(_gaq.push.bind(_gaq));
   };
 
@@ -365,10 +363,13 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   if (Airlock.settings.autoInit !== false) {
     Airlock.initialize();
   }
+  if (Airlock.settings.autoInit === false || Airlock.settings.expose) {
+    window.Airlock = Airlock;
+  }
+
   if (typeof define === "function" && define.amd) {
     define("airlock", [], function() {
         return Airlock;
     });
   }
-  window.Airlock = Airlock;
 })(window, document);
