@@ -19,6 +19,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   var Airlock = {};
   Airlock.settings = window._airlock || {};
+  Airlock.settings.dimensionMap = Airlock.settings.dimensionMap || {};
 
   // First thing's first; load the new hotness.
   (function(a, i, r, l, o, c, k) {
@@ -321,7 +322,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
     // Custom Variables
     _setCustomVar: function (slot, name, value) {
-      var args = ['set', 'dimension' + slot, value];
+      var dimensionMap = Airlock.settings.dimensionMap, args;
+      slot = dimensionMap[slot] || dimensionMap[name] || slot;
+      args = ['set', 'dimension' + slot, value];
 
       if (this.initialized) { return args; }
       this.setupQueue.push(Airlock.open.bind(Airlock, this, args));
