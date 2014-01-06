@@ -1,29 +1,38 @@
 # Airlock
 
-(c) 2013 by Search Discovery <http://searchdiscovery.com/>
+(c) 2013 by [Search Discovery](http://searchdiscovery.com)
 
-airlock.js may be freely distributed under the MIT license. http://opensource.org/licenses/MIT
+airlock.js may be freely distributed under the [MIT license](http://opensource.org/licenses/MIT).
 
 For all details and documentation: http://www.searchdiscovery.com/airlock
 
 ## Description
-Airlock is a JavaScript library that automatically turns your asynchronous Google Analytics calls into Universal Analytics calls, lifting the burden of having to re-implement a site when upgrading to Universal Analytics.
+Airlock is a JavaScript library that automatically turns your asynchronous Google Analytics calls into Universal Analytics calls, lifting the burden of having to re-tag your entire site when upgrading to Universal Analytics.
 
-## Before You Start
+## Basic Installation
 
-In order to utilize Airlock you must upgrade your classic Google Analytics property to Universal Analytics. From the Admin panel under your Property column you will see an option for "Universal Analytics Upgrade".
+### Before You Start
+In order to utilize Airlock you must first upgrade your classic Google Analytics property to Universal Analytics. In your Google Analytics admin panel under the "Property" column you will see an option for "Universal Analytics Upgrade." Select the "Transfer" button to complete the upgrade request.
 
-If the upgrade feature is not available in the property settings it could mean that the upgrade has not been rolled out to you yet. You can request whitelist access to upgrade using the Google signup document. https://docs.google.com/a/searchdiscovery.com/forms/d/1APUQLB54t8VluqM-RkqkK3wK_a61IsvDxt-YEk6q-EU/viewform#start=invite
+It may take up to 48 hours to complete the upgrade to Universal Analytics. **Do not install Airlock until this upgrade is complete**. After your upgrade is complete, your classic Google Analytics code will continue to send data to your property reports. Install Airlock to receive the full benefits of Universal Analytics.
 
-Select the Transfer button to complete the upgrade request. It will take up to 48 hours to complete the upgrade to Universal Analytics. **Do not** install Airlock until
-this upgrade is complete. After your upgrade is complete your classic Google
-Analytics code will continue to send data to your property reports.
+### Get Airlock
 
-## How to Implement Airlock on Your Site
+#### Using Bower
+If you have the [Bower](http://bower.io/) package manager installed on your system, you can install Airlock from the command line.
+
+    bower install airlock --save
+
+This command will clone the latest version of Airlock into your Bower components directory and will specify Airlock as a dependency in your `bower.json` file, if you have created one.
+
+#### Manually
+Download and extract the [latest zip package](https://github.com/SDITools/Airlock/archive/master.zip) from Github and copy `airlock.js` and `airlock.min.js` into your project, then include them using the method specified below that is appropriate for your analytics installation.
+
+### How to Implement Airlock on Your Site
 Once your property has been successfully transferred to Universal Analytics, it is time to deploy the code on your site.
 
-## Implementing Airlock With On-Page Code
-To upgrade a vanilla Google Analytics install where you are not using any tag management systems, you will replace the code to include the Google Analytics file with the Airlock code.
+#### Implement Airlock With On-Page Code
+To upgrade a vanilla Google Analytics installation on a site not using a tag management system, simply replace the standard Google Analytics asynchronous script include with a reference to your local Airlock file.
 
 ```html
 <script type="text/javascript">
@@ -31,49 +40,31 @@ To upgrade a vanilla Google Analytics install where you are not using any tag ma
   _gaq.push(['_setAccount', 'UA-XXXXX-X']);
   _gaq.push(['_trackPageview']);
 
-  (function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+  // Remove this:
+  // (function() {
+  // var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  // ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  // var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  // })();
 </script>
-```
-
-Remove the function that includes the classic Google Analytics ga.js file and include the Airlock JavaScript file. We recommend that the Airlock code be placed in a separate file, which will be hosted on your servers.
-
-```html
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-XXXXX-X']);
-  _gaq.push(['_trackPageview']);
-</script>
+<!-- and add this: -->
 <script type="text/javascript" src="[INSERT YOUR PATH]/airlock.min.js"></script>
 ```
-The Airlock JavaScript file must be included on every page that has the classic
-baseline Google Analytics code. That’s it! Everything else is handled from here,
-even the inclusion of the new Universal Analytics JavaScript file.
 
-## Implementing Airlock With Adobe Dynamic Tag Management
-First, you have to disable Adobe DTM from including the Google Analytics
-JavaScript file automatically. After clicking the property you want to use Airlock
-on, select the Google Analytics tool from your installed tools by clicking on the
-gear.
+That’s it! Everything else (even the inclusion of the new Universal Analytics JavaScript file) is handled by Airlock.
 
-Under the General section, check the box "Google Analytics page code is already present". This will ensure that the ga.js file does not get included on the page.
+#### Implement Airlock With Adobe Dynamic Tag Management
+First, you must prevent Adobe DTM from including the Google Analytics JavaScript file automatically. After clicking the property on which you would like to install Airlock, select the Google Analytics tool from your installed tools by clicking on the gear.
 
+Under the "General" section, check the box marked "Google Analytics page code is already present." This will ensure that DTM does not include the ga.js file on the page.
 
-Next, create a new Page Load Rule that will fire on every page. Trigger the rule
-at the bottom of the page. (If you already have a rule that does this, you do not
-need to add a new rule, you can just add the code to the existing rule). In the
-JavaScript/Third Party Tags section, click the Sequential JavaScript tab and click
-the Add New Script button.
+Next, create a new page load rule that will fire on every page. Set the rule to fire at the bottom of the page. (If you already have a rule that does this, you do not need to add a new rule, you can just add the code to the existing rule). In the "JavaScript/Third Party Tags" section, navigate to the "Sequential JavaScript" tab and click the "Add New Script" button.
 
-Paste the Airlock code, check the box to execute globally, and click the Save
-Code button. Click the Save Rule button, Approve and Publish the update. That's it. Airlock will handle everything from this point forward, including the inclusion of the new Universal Analytics code.
+Paste the Airlock code into the code editor, check the "Execute Globally" box, and click the "Save Code" button. Click the "Save Rule" button, then approve and publish the update. That's it. Airlock will handle everything from this point forward, including the inclusion of the new Universal Analytics code.
 
-## Implementing Airlock With Google Tag Manager
-In your Google Tag Manager account container create a new tag. Select Custom HTML Tag as the Tag Type. Add the Airlock JavaScript code to the HTML input box, but as it is HTML be sure to enclose it with script tags.
+#### Implement Airlock With Google Tag Manager
+In your Google Tag Manager account container, create a new tag. Select "Custom HTML Tag" as the tag type. Add the Airlock JavaScript code to the HTML input box (since GTM is expecting HTML here, be sure to use a script tag referencing your local Airlock, or paste the Airlock code enclosed within `<script>` tags).
 
-Click the Add Rule to Fire Tag button and select the All pages Rule.
+Click the "Add Rule To Fire Tag" button and select the "All Pages" rule.
 
-Click Save and click Save again. Preview, test and Publish your update. That's it.
+Click "Save" and then save again. Preview, test, and publish your update. That's it!
