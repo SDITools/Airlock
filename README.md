@@ -63,7 +63,7 @@ Next, create a new page load rule that will fire on every page. Set the rule to 
 Paste the Airlock code into the code editor, check the "Execute Globally" box, and click the "Save Code" button. Click the "Save Rule" button, then approve and publish the update. That's it. Airlock will handle everything from this point forward, including the inclusion of the new Universal Analytics code.
 
 #### Implement Airlock With Google Tag Manager
-In your Google Tag Manager account container, create a new tag. Select "Custom HTML Tag" as the tag type. Add the Airlock JavaScript code to the HTML input box (since GTM is expecting HTML here, be sure to use a script tag referencing your local Airlock, or paste the Airlock code enclosed within `<script>` tags).
+In your Google Tag Manager account container, create a new tag. Select "Custom HTML Tag" as the tag type. Add the Airlock JavaScript code to the HTML input box (since GTM is expecting HTML here, be sure to use a `<script>` tag referencing your local Airlock, or paste the Airlock code enclosed within `<script>` tags).
 
 Click the "Add Rule To Fire Tag" button and select the "All Pages" rule.
 
