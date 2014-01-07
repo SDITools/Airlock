@@ -28,6 +28,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     a[o] = a[o] || (function() {
       (a[o].q = a[o].q || []).push(arguments);
     });
+    if (Airlock.settings.loadUA === false) { return; }
     a[o].l = 1 * (new Date());
     c = i.createElement(r);
     k = i.getElementsByTagName(r)[0];
