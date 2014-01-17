@@ -116,6 +116,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   Airlock.readAction = function (actionName) {
     var match = actionName.match(rx.actions);
+    if (!match) { return null; }
     return {
       namespace: match[1],
       action: match[2]
@@ -166,6 +167,8 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
       var action = Airlock.readAction(qItem[0]);
 
+      if (!action) { return; }
+
       if (rx.setupActions.test(action.action)) {
         // If we find a tracker we have not yet initialized, set it up
         if (!this.spaceships.has(action.namespace)) {
@@ -195,16 +198,16 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         return Airlock.open(null, args);
       }
 
-      var action = args[0];
-      // Ensure users are sending a valid action, otherwise do nothing.
-      if (!rx.actions.test(action)) { return; }
+      var action = Airlock.readAction(args[0]);
+
+      if (!action) { return; }
 
       // If the user is trying to setup/send an ecommerce action
-      if (rx.ecommerceActions.test(action) && !Airlock.ecommerceInitialized) {
+      if (rx.ecommerceActions.test(action.action) && !Airlock.ecommerceInitialized) {
         Airlock.ecommerceInitialized = true;
         Airlock._open(['require', 'ecommerce', 'ecommerce.js']);
       }
-      var spaceship = Airlock.spaceships.get(Airlock.readAction(action).namespace);
+      var spaceship = Airlock.spaceships.get(action.namespace);
 
       if (!spaceship) { return; }
 
