@@ -15,7 +15,9 @@
     "grunt-contrib-uglify": "~0.2.7",
     "grunt-replace": "~0.5.1",
     "grunt-git": "~0.2.3",
-    "grunt-contrib-jshint": "~0.7.2"
+    "grunt-contrib-jshint": "~0.7.2",
+    "jscs": "~1.2.3",
+    "grunt-jscs-checker": "~0.3.2"
   },
   "scripts": {
     "test": "grunt test"

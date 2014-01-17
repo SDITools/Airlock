@@ -71,6 +71,16 @@ module.exports = function (grunt) {
           src: ['airlock.js']
         }]
       }
+    },
+    jscs: {
+      deploy: {
+        files: [{
+          src: ['airlock.js']
+        }],
+        options: {
+          config: "jscs.json",
+        }
+      }
     }
   });
 
@@ -80,6 +90,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks("grunt-jscs-checker");
 
   grunt.registerTask('test', ['server', 'casperjs', 'watch:test']);
   grunt.registerTask('testOnce', ['server', 'casperjs']);
@@ -87,7 +98,8 @@ module.exports = function (grunt) {
     'testOnce',
     'jshint:deploy',
     'replace:deploy',
-    'uglify:deploy'
+    'uglify:deploy',
+    'jscs:deploy'
   ]);
 
   grunt.registerTask('server', 'Server HTML test runner', function () {

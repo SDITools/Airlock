@@ -135,7 +135,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
       ga.q.forEach(function (qItem, i) {
         if (typeof qItem[0] !== 'string' || qItem[0] !== 'create') { return; }
-        j = j+i+1;
+        j = j + i + 1;
         tempQ.splice(j, 0, [function () {
           var ga = window[window.GoogleAnalyticsObject],
               settings = qItem[qItem.length - 1],
@@ -244,7 +244,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   };
 
   Airlock.pressurize = function (args, spaceship) {
-    var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, "$2")];
+    var conversion = Airlock.conversions[args.splice(0,1)[0].replace(rx.actions, '$2')];
 
     if (!conversion) { return; }
 
@@ -374,8 +374,8 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     window.Airlock = Airlock;
   }
 
-  if (typeof define === "function" && define.amd) {
-    define("airlock", [], function() {
+  if (typeof define === 'function' && define.amd) {
+    define('airlock', [], function() {
         return Airlock;
     });
   }
