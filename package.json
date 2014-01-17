@@ -1,6 +1,6 @@
 {
   "name": "Airlock.js",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "An adapter to convert ga.js calls to analytics.js calls",
   "author": "Search Discovery",
   "homepage": "http://www.searchdiscovery.com/airlock",
