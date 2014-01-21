@@ -111,7 +111,7 @@ By default the Airlock object is not exposed to the global namespace (unless aut
 ### Adding/Modifying GA->UA Translations: `_airlock.conversions`
 Airlock needs no modification to work seamlessly with the great majority of GA installs. However, if you need to add or modify a procedure for translating a particular type of `_gaq.push()` call, you can do this by creating and setting conversion procedures on the `_airlock.conversions` object.
 
-When Airlock receives `_gaq.push()` calls, it grabs the first argument and checks `Airlock.conversions` to see if there is a conversion procedure matching that key. Any procedures set on `_airlock.conversions` will override default conversion procedures on `Airlock.conversions`. Thus, if you want to override the default behavior of `_gaq.push(['_trackSocial'/*, ...*/]); calls, you would set a `_trackSocial` property on `_airlock.conversions`.
+When Airlock receives `_gaq.push()` calls, it grabs the first argument and checks `Airlock.conversions` to see if there is a conversion procedure matching that key. Any procedures set on `_airlock.conversions` will override default conversion procedures on `Airlock.conversions`. Thus, if you want to override the default behavior of `_gaq.push(['_trackSocial'/*, ...*/]);` calls, you would set a `_trackSocial` property on `_airlock.conversions`.
 
 #### Conversion Procedure Formats
 Conversion procedures can be functions or template objects.
@@ -120,7 +120,7 @@ Conversion procedures can be functions or template objects.
 Functions receive `_gaq.push()` arguments indexed > 0. If an array is returned, `ga()` will be called using the array members as its arguments.
 
 ##### Conversion Templates
-Conversion template objects contain an input and an output array.  The input array contains the keys by which `_gaq.push()` arguments are indexed. The output array is a template of the arguments that will be passed to `ga();`. This array's members can either be plain strings, template strings (`"dimension[[slot]]"`, which will be output the word "dimension" concatenated with the value of the `slot` input key), or a function, which will receive as an argument an object containing the indexed input variables, and whose return value will be the value of the output index at which the function was declared.
+Conversion template objects contain an input and an output array.  The input array contains the keys by which `_gaq.push()` arguments are indexed. The output array is a template of the arguments that will be passed to `ga()`. This array's members can either be plain strings, template strings (e.g., `"dimension[[slot]]"`, which will output the string "dimension" concatenated with the value of the `slot` input key), or a function, which will receive as an argument an object containing the indexed input variables, and whose return value will be the value of the output index at which the function was declared.
 
 ### AMD Support
 Airlock is AMD compatible.
