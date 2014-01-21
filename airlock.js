@@ -367,6 +367,15 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     }
   };
 
+  if (Airlock.settings.conversions) {
+    var conversions = Airlock.settings.conversions;
+    for (var key in conversions) {
+      if (conversions.hasOwnProperty(key)) {
+        Airlock.conversions[key] = conversions[key];
+      }
+    }
+  }
+
   if (Airlock.settings.autoInit !== false) {
     Airlock.initialize();
   }
