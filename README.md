@@ -68,3 +68,43 @@ In your Google Tag Manager account container, create a new tag. Select "Custom H
 Click the "Add Rule To Fire Tag" button and select the "All Pages" rule.
 
 Click "Save" and then save again. Preview, test, and publish your update. That's it!
+
+## Advanced Options
+
+When loaded onto the page, Airlock checks for the presence of an `_airlock` object in the global namespace. If it find the object, it will use it to configure your Airlock setup.
+
+```javascript
+var _airlock = {
+  // your settings
+};
+```
+
+### Load UA Debug Script: `_airlock.debug`
+Universal Analytics has a debug version of analytics.js that outputs verbose logging to the console. To load this version instead of the default, set `_airlock.debug = true;`.
+
+### Custom Namespacing for UA: `_airlock.gaNamespace`
+Universal Analytics allows implementors to choose a custom namespace for the Universal Analytics library (it defaults to `ga`). To choose a custom namespace, set `_airlock.gaNamespace = 'yourCustomNamespace'`.
+
+### Custom Dimension Mapping: `_airlock.dimensionMap`
+By default, Airlock will map GA custom variable slot numbers to dimension numbers, thus `_gaq.push(['_setCustomVar', 2, 'name', 'value']);` will translate to `ga("set", "dimension2", "value");`
+
+If you need to override this default behaviour, you can map slot numbers or custom variable names to dimension numbers using the `_airlock.dimensionMap` property:
+
+```javascript
+_airlock.dimensionMap = {
+  "2": 1 // customVar in slot 2 will map to "dimension1"
+  'varName': 2 // customVar with name "varName" will map to "dimension2"
+}
+```
+
+### Prevent Airlock Auto-Init: `_airlock.autoInit`
+By default, Airlock will initialize itself automatically. If you need to prevent this in order to initialize at a later time, simply set `_airlock.autoInit = false;`, then call `Airlock.initialize()` when ready.
+
+### Prevent UA Autoload: `_airlock.loadUA`
+If Airlock is loaded prior to Airlock being loaded on the page, Airlock will not load the library again.  However, if you need to load Airlock before UA is loaded, you can set `_airlock.loadUA = false;`.
+
+### Expose The Airlock Object
+By default the Airlock object is not exposed to the global namespace (unless autoInit is disabled). If you need to access the Airlock object, set `_airlock.expose = true;`
+
+### AMD Support
+Airlock is AMD compatible.
