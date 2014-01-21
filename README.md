@@ -71,7 +71,7 @@ Click "Save" and then save again. Preview, test, and publish your update. That's
 
 ## Advanced Options
 
-When loaded onto the page, Airlock checks for the presence of an `_airlock` object in the global namespace. If it find the object, it will use it to configure your Airlock setup.
+When loaded onto the page, Airlock checks for the presence of an `_airlock` object in the global namespace. If Airlock finds the object, it will be used to configure your Airlock setup.
 
 ```javascript
 var _airlock = {
@@ -83,10 +83,10 @@ var _airlock = {
 Universal Analytics has a debug version of analytics.js that outputs verbose logging to the console. To load this version instead of the default, set `_airlock.debug = true;`.
 
 ### Custom Namespacing for UA: `_airlock.gaNamespace`
-Universal Analytics allows implementors to choose a custom namespace for the Universal Analytics library (it defaults to `ga`). To choose a custom namespace, set `_airlock.gaNamespace = 'yourCustomNamespace'`.
+Universal Analytics allows implementors to choose a custom namespace for the Universal Analytics library (it defaults to `ga`). To choose a custom namespace, set `_airlock.gaNamespace = 'yourCustomNamespace';`.
 
 ### Custom Dimension Mapping: `_airlock.dimensionMap`
-By default, Airlock will map GA custom variable slot numbers to dimension numbers, thus `_gaq.push(['_setCustomVar', 2, 'name', 'value']);` will translate to `ga("set", "dimension2", "value");`
+By default, Airlock will map GA custom variable slot numbers to UA dimension numbers, thus `_gaq.push(['_setCustomVar', 2, 'name', 'value']);` will translate to `ga("set", "dimension2", "value");`
 
 If you need to override this default behaviour, you can map slot numbers or custom variable names to dimension numbers using the `_airlock.dimensionMap` property:
 
@@ -101,10 +101,26 @@ _airlock.dimensionMap = {
 By default, Airlock will initialize itself automatically. If you need to prevent this in order to initialize at a later time, simply set `_airlock.autoInit = false;`, then call `Airlock.initialize()` when ready.
 
 ### Prevent UA Autoload: `_airlock.loadUA`
-If Airlock is loaded prior to Airlock being loaded on the page, Airlock will not load the library again.  However, if you need to load Airlock before UA is loaded, you can set `_airlock.loadUA = false;`.
+In most situations, implementors will want to let Airlock load Universal Analytics. In special cases, however, users may want to load the Universal Analytics library on their own.
 
-### Expose The Airlock Object
-By default the Airlock object is not exposed to the global namespace (unless autoInit is disabled). If you need to access the Airlock object, set `_airlock.expose = true;`
+If `analytics.js` is loaded prior to Airlock, Airlock will not load UA again.  However, if you need to load Airlock before UA is loaded and want to intialize `analytics.js` yourself, you can set `_airlock.loadUA = false;`.
+
+### Expose The Airlock Object: `_airlock.expose`
+By default the Airlock object is not exposed to the global namespace (unless autoInit is disabled). If you need to access the Airlock object, set `_airlock.expose = true;`.
+
+### Adding/Modifying GA->UA Translations: `_airlock.conversions`
+Airlock needs no modification to work seamlessly with the great majority of GA installs. However, if you need to add or modify a procedure for translating a particular type of `_gaq.push()` call, you can do this by creating and setting conversion procedures on the `_airlock.conversions` object.
+
+When Airlock receives `_gaq.push()` calls, it grabs the first argument and checks `Airlock.conversions` to see if there is a conversion procedure matching that key. Any procedures set on `_airlock.conversions` will override default conversion procedures on `Airlock.conversions`. Thus, if you want to override the default behavior of `_gaq.push(['_trackSocial'/*, ...*/]); calls, you would set a `_trackSocial` property on `_airlock.conversions`.
+
+#### Conversion Procedure Formats
+Conversion procedures can be functions or template objects.
+
+##### Conversion Functions
+Functions receive `_gaq.push()` arguments indexed > 0. If an array is returned, `ga()` will be called using the array members as its arguments.
+
+##### Conversion Templates
+Conversion template objects contain an input and an output array.  The input array contains the keys by which `_gaq.push()` arguments are indexed. The output array is a template of the arguments that will be passed to `ga();`. This array's members can either be plain strings, template strings (`"dimension[[slot]]"`, which will be output the word "dimension" concatenated with the value of the `slot` input key), or a function, which will receive as an argument an object containing the indexed input variables, and whose return value will be the value of the output index at which the function was declared.
 
 ### AMD Support
 Airlock is AMD compatible.
