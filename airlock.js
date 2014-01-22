@@ -54,7 +54,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   var _gaq = window._gaq,
       rx = {
         actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
-        setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath)?)$/,
+        setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath|SiteSpeedSampleRate)?)$/,
         ecommerceActions: /^(.+\.)?_(add(Trans|Item)|trackTrans)$/,
         writeableSet: /^page|title$/
       };
@@ -305,6 +305,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       if (rx.writeableSet.test(key)) {
         return ['set', key, val];
       }
+    },
+    _setSiteSpeedSampleRate: function (rate) {
+      this.settings.siteSpeedSampleRate = rate;
     },
     _setDomainName: function (domainName) {
       this._settings.domainName = domainName;
