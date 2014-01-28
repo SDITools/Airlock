@@ -54,13 +54,11 @@ To upgrade a vanilla Google Analytics installation on a site not using a tag man
 That’s it! Everything else (even the inclusion of the new Universal Analytics JavaScript file) is handled by Airlock.
 
 #### Implement Airlock With Adobe Dynamic Tag Management
-First, you must prevent Adobe DTM from including the Google Analytics JavaScript file automatically. After clicking the property on which you would like to install Airlock, select the Google Analytics tool from your installed tools by clicking on the gear.
+If you are using Adobe DTM's feature to include Google Analytics hosted code (which is the default behavior), implementing Airlock.js in Adobe DTM is as simple as making the Google Analytics tool point to Airlock instead of the default "classic" `ga.js` library.  Below are the steps to update this setting.
 
-Under the "General" section, check the box marked "Google Analytics page code is already present." This will ensure that DTM does not include the ga.js file on the page.
+First, upload the Airlock.js file to an accessible location on your server.  Next, log in to Adobe DTM, select the property on which you would like to utilize Airlock, and under the "Installed Tools" section of your site, click the gear icon next to your Google Analytics installation. Click the "General" tab, and change the value of the "Google Analytics Code" dropdown to "URL".  (At this point you will also need to ensure that the "Google Analytics page code is already present" checkbox is NOT checked.) Inputs will appear allowing you to specify both the http: and https: location of the Airlock file hosted on your server.
 
-Next, create a new page load rule that will fire on every page. Set the rule to fire at the bottom of the page. (If you already have a rule that does this, you do not need to add a new rule, you can just add the code to the existing rule). In the "JavaScript/Third Party Tags" section, navigate to the "Sequential JavaScript" tab and click the "Add New Script" button.
-
-Paste the Airlock code into the code editor, check the "Execute Globally" box, and click the "Save Code" button. Click the "Save Rule" button, then approve and publish the update. That's it. Airlock will handle everything from this point forward, including the inclusion of the new Universal Analytics code.
+Save, approve, and publish the settings. Once this is done, Airlock is successfully installed on your DTM property.
 
 #### Implement Airlock With Google Tag Manager
 In your Google Tag Manager account container, create a new tag. Select "Custom HTML Tag" as the tag type. Add the Airlock JavaScript code to the HTML input box (since GTM is expecting HTML here, be sure to use a `<script>` tag referencing your local Airlock, or paste the Airlock code enclosed within `<script>` tags).

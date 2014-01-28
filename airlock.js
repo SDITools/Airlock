@@ -296,6 +296,9 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
     _setSampleRate: function (rate) {
       this.settings.sampleRate = rate;
     },
+    _setSiteSpeedSampleRate: function (rate) {
+      this.settings.siteSpeedSampleRate = rate;
+    },
     _setCookiePath: function (path) {
       this.settings.cookiePath = path;
     },
@@ -305,9 +308,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       if (rx.writeableSet.test(key)) {
         return ['set', key, val];
       }
-    },
-    _setSiteSpeedSampleRate: function (rate) {
-      this.settings.siteSpeedSampleRate = rate;
     },
     _setDomainName: function (domainName) {
       this._settings.domainName = domainName;
