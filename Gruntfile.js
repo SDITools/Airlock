@@ -97,9 +97,9 @@ module.exports = function (grunt) {
   grunt.registerTask('deploy', [
     'testOnce',
     'jshint:deploy',
+    'jscs:deploy',
     'replace:deploy',
-    'uglify:deploy',
-    'jscs:deploy'
+    'uglify:deploy'
   ]);
 
   grunt.registerTask('server', 'Server HTML test runner', function () {
