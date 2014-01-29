@@ -2,7 +2,7 @@
 
 (c) 2013 by [Search Discovery](http://searchdiscovery.com)
 
-![](http://www.google-analytics.com/__utm.gif?utmwv=5.4.6&utms=4&utmn=1290376931&utmhn=www.searchdiscovery.com&utmcs=UTF-8&utmsr=&utmvp=&utmsc=&utmul=en-us&utmje=1&utmfl=11.9%20r900&utmdt=&utmhid=1804252804&utmr=0&utmp=%2Fairlock%2Fon%20github%2F&utmht=1390953327607&utmac=UA-12008979-9&utmcc=__utma%3D115754457.1872868349.1390953226.1390953226.1390953226.1%3B%2B__utmz%3D115754457.1390953226.1.1.utmcsr%3D(direct)%7Cutmccn%3D(direct)%7Cutmcmd%3D(none)%3B&utmu=qhCg~)
+![](//www.google-analytics.com/__utm.gif?utmwv=5.4.6&utms=4&utmn=1290376931&utmhn=www.searchdiscovery.com&utmcs=UTF-8&utmsr=&utmvp=&utmsc=&utmul=en-us&utmje=1&utmfl=11.9%20r900&utmdt=&utmhid=1804252804&utmr=0&utmp=%2Fairlock%2Fon%20github%2F&utmht=1390953327607&utmac=UA-12008979-9&utmcc=__utma%3D115754457.1872868349.1390953226.1390953226.1390953226.1%3B%2B__utmz%3D115754457.1390953226.1.1.utmcsr%3D(direct)%7Cutmccn%3D(direct)%7Cutmcmd%3D(none)%3B&utmu=qhCg~)
 
 airlock.js may be freely distributed under the [MIT license](http://opensource.org/licenses/MIT).
 
