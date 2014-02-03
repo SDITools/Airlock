@@ -53,7 +53,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   var _gaq = window._gaq,
       rx = {
-        actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath)?|_link|_require)$/,
+        actions: /^([\w\d_-]+)?\.?(_track(Event|Pageview|Trans|Social|Timing)|_add(Item|Trans)|_set(CustomVar|Account|DomainName|AllowLinker|SampleRate|CookiePath|SiteSpeedSampleRate)?|_link|_require)$/,
         setupActions: /^(.+\.)?_(set(Account|CustomVar|DomainName|AllowLinker|SampleRate|CookiePath|SiteSpeedSampleRate)?)$/,
         ecommerceActions: /^(.+\.)?_(add(Trans|Item)|trackTrans)$/,
         writeableSet: /^page|title$/
