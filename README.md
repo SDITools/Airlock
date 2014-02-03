@@ -122,3 +122,5 @@ Conversion template objects contain an input and an output array.  The input arr
 
 ### AMD Support
 Airlock is AMD compatible.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-12008979-9/chromeskel_a/readme?pixel)](https://github.com/igrigorik/ga-beacon)
