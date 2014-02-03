@@ -8,7 +8,7 @@
    d8888888888   888   888  T88b  888     Y88b. .d88P Y88b  d88P 888   Y88b
   d88P     888 8888888 888   T88b 88888888 "Y88888P"   "Y8888P"  888    Y88b
 ------------------------------------------------------------------------------
-Airlock v1.0.0
+Airlock v1.0.1
 (c) 2013 by Search Discovery <http://searchdiscovery.com/>
 
 airlock.js may be freely distributed under the MIT license.
