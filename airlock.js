@@ -16,6 +16,7 @@ airlock.js may be freely distributed under the MIT license.
 For all details and documentation: http://www.searchdiscovery.com/airlock
 ----------------------------------------------------------------------------*/
 (function (window, document, undefined) {
+  'use strict';
 
   var Airlock = {};
   Airlock.settings = window._airlock || {};
@@ -49,7 +50,13 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
   }
 
   // Convenience functions
-  var returnArg = function (arg) { return arg; };
+  function returnArg (arg) { return arg; }
+  function bind (func, context) {
+    var args = [].slice.call(arguments, 2);
+    return function () {
+      return func.apply(context, [].concat.apply(args, arguments));
+    };
+  }
 
   var _gaq = window._gaq,
       rx = {
@@ -59,10 +66,10 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
         writeableSet: /^page|title$/
       };
 
-  var Store = function () {
+  function Store () {
     this._contents = {};
     this._defaultKey = 't0';
-  };
+  }
   Store.prototype.get = function (key) {
     key = key || this._defaultKey;
     return this._contents[key];
@@ -214,7 +221,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       args = Airlock.pressurize(args, spaceship);
       Airlock.open(spaceship, args);
     };
-    _gaq.forEach(_gaq.push.bind(_gaq));
+    _gaq.forEach(bind(_gaq.push, _gaq));
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -334,7 +341,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       args = ['set', 'dimension' + slot, value];
 
       if (this.initialized) { return args; }
-      this.setupQueue.push(Airlock.open.bind(Airlock, this, args));
+      this.setupQueue.push(bind(Airlock.open, Airlock, this, args));
     },
 
     // Tracking actions
