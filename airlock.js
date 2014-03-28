@@ -8,7 +8,7 @@
    d8888888888   888   888  T88b  888     Y88b. .d88P Y88b  d88P 888   Y88b
   d88P     888 8888888 888   T88b 88888888 "Y88888P"   "Y8888P"  888    Y88b
 ------------------------------------------------------------------------------
-Airlock v1.0.2
+Airlock v1.0.3
 (c) 2013 by Search Discovery <http://searchdiscovery.com/>
 
 airlock.js may be freely distributed under the MIT license.
@@ -16,7 +16,6 @@ airlock.js may be freely distributed under the MIT license.
 For all details and documentation: http://www.searchdiscovery.com/airlock
 ----------------------------------------------------------------------------*/
 (function (window, document, undefined) {
-  'use strict';
 
   var Airlock = {};
   Airlock.settings = window._airlock || {};
@@ -51,12 +50,6 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
   // Convenience functions
   function returnArg (arg) { return arg; }
-  function bind (func, context) {
-    var args = [].slice.call(arguments, 2);
-    return function () {
-      return func.apply(context, [].concat.apply(args, arguments));
-    };
-  }
 
   var _gaq = window._gaq,
       rx = {
@@ -221,7 +214,7 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       args = Airlock.pressurize(args, spaceship);
       Airlock.open(spaceship, args);
     };
-    _gaq.forEach(bind(_gaq.push, _gaq));
+    _gaq.forEach(function (args) { _gaq.push(args); });
   };
 
   // Add tracker to Airlock, push settings to ga
@@ -336,12 +329,16 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
 
     // Custom Variables
     _setCustomVar: function (slot, name, value) {
-      var dimensionMap = Airlock.settings.dimensionMap, args;
+      var dimensionMap = Airlock.settings.dimensionMap,
+          that = this,
+          args;
       slot = dimensionMap[slot] || dimensionMap[name] || slot;
       args = ['set', 'dimension' + slot, value];
 
       if (this.initialized) { return args; }
-      this.setupQueue.push(bind(Airlock.open, Airlock, this, args));
+      this.setupQueue.push(function () {
+        Airlock.open(that, args);
+      });
     },
 
     // Tracking actions
