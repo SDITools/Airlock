@@ -54,9 +54,7 @@ To upgrade a vanilla Google Analytics installation on a site not using a tag man
 That’s it! Everything else (even the inclusion of the new Universal Analytics JavaScript file) is handled by Airlock.
 
 #### Implement Airlock With Adobe Dynamic Tag Management
-If you are using Adobe DTM's feature to include Google Analytics hosted code (which is the default behavior), implementing Airlock.js in Adobe DTM is as simple as making the Google Analytics tool point to Airlock instead of the default "classic" `ga.js` library.  Below are the steps to update this setting.
-
-First, upload the Airlock.js file to an accessible location on your server.  Next, log in to Adobe DTM, select the property on which you would like to utilize Airlock, and under the "Installed Tools" section of your site, click the gear icon next to your Google Analytics installation. Click the "General" tab, and change the value of the "Google Analytics Code" dropdown to "URL".  (At this point you will also need to ensure that the "Google Analytics page code is already present" checkbox is NOT checked.) Inputs will appear allowing you to specify both the http: and https: location of the Airlock file hosted on your server.
+Adobe DTM implements Airlock natively. To enable Airlock in DTM, go to the settings page for your classic Google Analytics tool (via the gear icon) and check the box labeled "Translate Google Analytics calls to Universal Analytics."
 
 Save, approve, and publish the settings. Once this is done, Airlock is successfully installed on your DTM property.
 
