@@ -3,10 +3,8 @@ module.exports = function (grunt, options) {
     options: {
       casperjsOptions: [
         '--concise',
-        '--port=' + options.pkg.config.testPort,
-        '--includes=tests/actionTester.js'
+        '--port=' + options.package.config.testPort
       ]
-    },
-    files: ['tests/actions/']
+    }
   };
 };

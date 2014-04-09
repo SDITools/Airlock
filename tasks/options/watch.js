@@ -1,6 +1,10 @@
 module.exports = {
-  test: {
-    files: ['airlock.js', 'tests/actions/*.js', 'tests/actionTester.js'],
-    tasks: ['casperjs']
+  // 'tests-unit': {
+  //   files: ['airlock.js', 'tests/unit/*.js'],
+  //   tasks: ['casperjs:unit']
+  // },
+  'tests-integration': {
+    files: ['airlock.js', 'tests/integration/*.js', 'tests/helpers/integration.js'],
+    tasks: ['test:integration']
   }
 };

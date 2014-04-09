@@ -1,4 +1,4 @@
-module.exports = function (grunt, options) {
+module.exports = function (grunt) {
   grunt.registerTask('server', 'Server HTML test runner', function () {
     var fs = require('fs');
     var http = require('http');
