@@ -228,14 +228,14 @@ For all details and documentation: http://www.searchdiscovery.com/airlock
       return Airlock._open([args]);
     }
     if (!spaceship || !spaceship.account) { return; }
-    var create = args[0] === 'create';
     if (args) {
-      args[0] = !spaceship.namespace || create ?
-        args[0] :
-        [spaceship.namespace, args[0]].join('.');
+      var create = args[0] === 'create';
+        args[0] = !spaceship.namespace || create ?
+          args[0] :
+          [spaceship.namespace, args[0]].join('.');
 
-      Airlock._open(args);
-      if (create) { spaceship.initialize(); }
+        Airlock._open(args);
+        if (create) { spaceship.initialize(); }
     }
   };
 
